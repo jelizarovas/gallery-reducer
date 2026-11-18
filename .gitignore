@@ -1,0 +1,6 @@
+node_modules
+dist
+# never commit library data: group lists, thumbnails or logs stay on the PC
+*.groups.json
+lookalike-groups.json
+tools/settings.json

@@ -1,0 +1,296 @@
+/* Material 3 dark scheme: tonal surfaces for elevation, one primary, semantic keep/trash roles.
+   House rules: no focus rings, no outline borders for state, nothing selectable, single-row bars. */
+:root{--bg:#111318;--surface:#1d2024;--surface-hi:#282a2f;--surface-top:#33353a;--on:#e2e2e9;--on-var:#c4c6d0;--outline:#44474e;
+--primary:#a8c7fa;--primary-cont:#284777;--on-primary-cont:#d6e3ff;
+--keep:#7ddc9a;--on-keep:#00391a;--trash:#ffb4ab;--on-trash:#690005;--warn:#f5c26b;
+--shadow1:0 1px 2px #0006,0 1px 3px 1px #0003;--shadow3:0 4px 8px 3px #0004,0 1px 3px #0006;color-scheme:dark}
+*{box-sizing:border-box;user-select:none;-webkit-user-select:none}
+*:focus,*:focus-visible{outline:none}
+img{-webkit-user-drag:none}
+html,body,#root{height:100%}
+body{margin:0;overflow:hidden;background:var(--bg);color:var(--on);font:14px/20px Roboto,"Segoe UI",system-ui,sans-serif}
+.app{height:100%;display:flex;flex-direction:column}
+.ms{font-family:"Material Symbols Outlined";font-weight:400;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;-webkit-font-smoothing:antialiased;font-feature-settings:"liga";flex:none}
+
+/* buttons */
+button{height:40px;display:inline-flex;align-items:center;gap:8px;padding:0 20px;border-radius:20px;border:0;font:500 14px/20px Roboto,"Segoe UI",sans-serif;letter-spacing:.1px;cursor:pointer;color:var(--primary);background:transparent;transition:background .15s,box-shadow .15s;flex:none}
+button:hover{background:rgba(168,199,250,.08)}
+button.filled{background:var(--keep);color:var(--on-keep)}button.filled:hover{box-shadow:var(--shadow1);background:#93e6ac}
+button.tonal{background:var(--primary-cont);color:var(--on-primary-cont)}button.tonal:hover{box-shadow:var(--shadow1);background:#31558c}
+button.outlined{border:1px solid var(--outline);padding:0 16px}
+button:disabled{opacity:.38;cursor:default;box-shadow:none}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:4px;background:rgba(0,0,0,.35);color:inherit;font:500 11px "Roboto Mono",ui-monospace,monospace}
+.pad{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;font:700 11px Roboto,sans-serif;background:var(--surface-top);color:var(--on)}
+.pad.A{background:#3c8b4b;color:#fff}.pad.B{background:#b3413a;color:#fff}.pad.X{background:#3a6fb3;color:#fff}.pad.Y{background:#b08a1e;color:#fff}
+
+/* top app bar: one row */
+header{display:flex;gap:12px;align-items:center;height:56px;padding:0 24px;background:var(--surface);flex:none;white-space:nowrap}
+header h1{margin:0 4px 0 0;font-size:20px;line-height:28px;font-weight:400}
+.seg{display:inline-flex;height:36px;border:1px solid var(--outline);border-radius:18px;overflow:hidden;flex:none}
+.seg button{height:100%;border-radius:0;padding:0 14px;gap:6px;color:var(--on-var);font-size:13px}
+.seg>*+*{border-left:1px solid var(--outline)}
+.seg b{color:var(--on);font-weight:500}.seg button.on{background:var(--primary-cont);color:var(--on-primary-cont)}.seg button.on b{color:#fff}
+.seg.nav button{padding:0 10px}.seg .pos{font-size:14px;font-weight:500;padding:0 12px;display:inline-flex;align-items:center}
+.spacer{flex:1}
+header .sm{height:36px;padding:0 16px}
+.menuwrap{position:relative;flex:none}
+.menu{position:absolute;right:0;top:44px;min-width:290px;background:var(--surface-hi);border-radius:8px;padding:8px 0;box-shadow:var(--shadow3);z-index:5}
+.menu .item{display:flex;align-items:center;gap:12px;width:100%;height:48px;padding:0 16px;border-radius:0;color:var(--on);font-weight:400;cursor:pointer;justify-content:flex-start}
+.menu .item:hover{background:rgba(255,255,255,.08)}.menu input{accent-color:var(--primary);width:18px;height:18px}.menu kbd{margin-left:auto;background:var(--surface-top)}
+.bar{height:4px;background:var(--surface-top);flex:none}.bar i{display:block;height:100%;background:var(--primary);transition:width .2s}
+@media(max-width:1080px){header h1{display:none}}
+
+/* content */
+.work{flex:1;min-height:0;display:flex}
+.grid{flex:1;min-width:0;overflow:auto;scrollbar-gutter:stable;display:grid;gap:12px;padding:16px 24px;align-content:start;justify-content:center}
+.split{flex:none;width:16px;cursor:col-resize;display:flex;align-items:center;justify-content:center;touch-action:none}
+.split i{width:4px;height:48px;border-radius:2px;background:var(--outline);transition:background .15s,height .15s}
+.split:hover i,.split.drag i{background:var(--primary);height:96px}
+aside{flex:none;min-width:0;display:flex;flex-direction:column;padding:16px 24px 16px 0}
+.stage{position:relative;flex:1;min-height:0;background:#000;border-radius:16px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:var(--shadow1)}
+.stage img,.stage video{max-width:100%;max-height:100%;object-fit:contain}
+.stage.drop img,.stage.drop video{filter:grayscale(.85)}
+.stage .badge{top:12px;left:12px;height:28px;font-size:12px;padding:0 12px}
+.stage .meta{font-size:15px;line-height:22px;padding:10px 16px 12px}.stage .meta .l1,.stage .delta{font-size:13px}
+.stage.video .meta{bottom:auto;top:0;padding-left:130px}
+
+/* cards: image fills the card, metadata is a scrim overlay; the previewed card is lit and raised */
+.card{position:relative;background:#000;border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:var(--shadow1);filter:brightness(.72);transition:box-shadow .15s,filter .15s}
+.card.focus{filter:none;box-shadow:var(--shadow3);z-index:1}
+.card.focus .meta{background:rgba(40,71,119,.9)}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .15s,filter .15s}
+.card.focus img{object-fit:contain}
+.card.drop img{opacity:.6;filter:grayscale(.85)}.card.gone img{opacity:.3}
+.meta{position:absolute;left:0;right:0;bottom:0;padding:6px 10px 7px;background:rgba(0,0,0,.62);backdrop-filter:blur(2px);font-size:12px;line-height:16px}
+.meta div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta .l1{font-family:"Roboto Mono",ui-monospace,monospace;font-size:11px;color:#d7d9e0}
+.meta .l2 b{font-weight:500;color:#fff}.meta .in{color:#aab}.meta .dir{color:#d7d9e0}
+.delta{float:right;margin-left:8px;font-family:"Roboto Mono",ui-monospace,monospace;font-size:11px;color:var(--warn)}
+.best{color:var(--keep)}
+.badge{position:absolute;top:8px;left:8px;height:24px;display:flex;align-items:center;padding:0 10px;border-radius:8px;font-weight:700;font-size:11px;letter-spacing:.5px;box-shadow:var(--shadow1)}
+.badge .ms{font-size:16px;margin-right:4px}
+.badge.keep{background:var(--keep);color:var(--on-keep)}.badge.drop{background:var(--trash);color:var(--on-trash)}
+.num{position:absolute;top:8px;right:8px;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;padding:0 6px;background:rgba(0,0,0,.62);border-radius:12px;font-weight:500;font-size:12px}
+
+/* bottom action bar: one row */
+footer{display:flex;gap:8px;align-items:center;height:64px;padding:0 24px;background:var(--surface);flex:none;white-space:nowrap}
+.msg{color:var(--on-var);font-size:13px;overflow:hidden;text-overflow:ellipsis}.msg.err{color:var(--trash)}
+.kind{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--on-var);cursor:help;flex:none}
+.kind.copy .ms{color:var(--keep)}.kind.sim .ms{color:var(--warn)}.kind.done .ms{color:var(--primary)}
+.stat{color:var(--on-var);flex:none}
+.padchip{display:inline-flex;align-items:center;gap:6px;color:var(--keep);font-size:13px;flex:none}
+@media(max-width:1150px){.stat{display:none}}
+@media(max-width:900px){.work{flex-direction:column}.split{display:none}aside{width:auto!important;height:45%;padding:0 24px 16px}}
+
+/* dialogs */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9}
+.dialog{border-radius:28px;background:var(--surface-hi);padding:24px;min-width:320px;max-width:min(720px,92vw);max-height:90vh;overflow:auto;box-shadow:var(--shadow3)}
+.dialog h2{margin:0 0 16px;font-size:24px;line-height:32px;font-weight:400}
+.dialog p{color:var(--on-var);margin:0 0 16px;white-space:normal}
+.dialog .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:24px}
+.dialog .pick{justify-content:flex-start;margin-top:0}
+.dialog table{border-collapse:collapse;width:100%}.dialog td,.dialog th{padding:6px 16px 6px 0;vertical-align:middle;text-align:left}
+.dialog th{color:var(--on-var);font-weight:500;font-size:12px}.dialog td:last-child{color:var(--on-var)}
+.dialog kbd{background:var(--surface-top);color:var(--on)}
+.big{font-size:32px;line-height:40px;color:var(--keep)}
+
+/* connect screen */
+.connect{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+.connect .panel{max-width:560px;background:var(--surface);border-radius:28px;padding:32px;box-shadow:var(--shadow1)}
+.connect h1{margin:0 0 8px;font-size:32px;line-height:40px;font-weight:400}
+.connect p{color:var(--on-var);margin:0 0 16px}.connect code{font-family:"Roboto Mono",monospace;color:var(--on)}
+.connect .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.connect .err{color:var(--trash)}
+
+/* compact header text: full labels on wide windows, short ones otherwise */
+.narrow{display:none}
+@media(max-width:1250px){header .wide,footer .wide{display:none}.narrow{display:inline}.seg.modes button:not(.on) .lbl{display:none}}
+.seg.modes button{padding:0 12px}.seg.modes .ms{font-size:18px}
+
+/* favorites */
+.num .ms{font-size:14px;color:var(--warn);margin-right:2px}
+.starbtn{position:absolute;top:8px;right:8px;width:40px;height:40px;padding:0;justify-content:center;border-radius:20px;background:rgba(0,0,0,.5);color:#fff;z-index:2}
+.starbtn:hover{background:rgba(0,0,0,.7)}.starbtn.on{color:var(--warn)}.starbtn.on .ms{font-variation-settings:"FILL" 1}
+
+/* videos */
+.vwork{flex:1;min-height:0;display:flex;flex-direction:column;padding:16px 24px 8px;gap:12px}
+.vwork .stage{cursor:pointer}.vwork .stage video{width:100%;height:100%}
+.stage .note{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;gap:8px;align-items:center;background:rgba(0,0,0,.7);padding:10px 16px;border-radius:12px;color:var(--on-var)}
+.bigplay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:36px;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;pointer-events:none}
+.bigplay .ms{font-size:44px}
+.timeline{flex:none;display:flex;align-items:center;gap:16px;height:56px}
+.timeline .t{font:500 13px "Roboto Mono",ui-monospace,monospace;color:var(--on-var);min-width:52px;text-align:center}
+.track{position:relative;flex:1;height:44px;cursor:pointer;touch-action:none}
+.track i{position:absolute;top:50%;transform:translateY(-50%);display:block}
+.track .rail{left:0;right:0;height:10px;border-radius:5px;background:var(--surface-top)}
+.track .kept{height:10px;border-radius:5px;background:var(--primary)}
+.track .kept.on{background:var(--keep);height:14px;border-radius:7px}
+.track .mark{width:0;height:36px;border-left:3px solid var(--keep);color:var(--keep)}
+.track .mark .ms{position:absolute;top:-4px;left:2px;font-size:18px}
+.track .mark.end .ms{left:auto;right:5px}
+.track .head{width:18px;height:18px;margin-left:-9px;border-radius:9px;background:#fff;box-shadow:var(--shadow3);transition:width .1s,height .1s,margin .1s}
+.track:hover .head,.track.drag .head{width:24px;height:24px;margin-left:-12px;border-radius:12px}
+footer .kind{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* icon buttons */
+.iconbtn{width:36px;height:36px;padding:0;justify-content:center;border-radius:18px;color:var(--on-var)}
+.iconbtn.on{background:var(--primary-cont);color:var(--on-primary-cont)}
+
+/* body row: quick peek panel (left) + the mode's content */
+.body{flex:1;min-height:0;display:flex}
+.body>.work,.body>.vwork{flex:1;min-width:0}
+.peek{position:relative;flex:none;overflow:hidden;background:var(--surface);transition:width .2s}
+.peek.drag{transition:none}
+.peekin{height:100%;display:flex;flex-direction:column}
+.peekhead{display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 4px 0 16px;color:var(--on-var);font-size:13px;flex:none}
+.peeklist{flex:1;min-height:0;overflow:auto}
+.peekrow{display:flex;align-items:center;gap:10px;padding:0 12px 0 8px;cursor:pointer;border-radius:8px;margin:0 4px}
+.peekrow:hover{background:rgba(255,255,255,.06)}
+.peekrow.on{background:var(--primary-cont)}
+.peekrow .pt{position:relative;flex:none;width:72px;height:50px;border-radius:6px;overflow:hidden;background:#000}
+.peekrow .pt img{width:100%;height:100%;object-fit:cover}
+.peekrow .pt .ms{position:absolute;right:2px;bottom:2px;font-size:16px;background:rgba(0,0,0,.65);border-radius:4px;padding:1px;color:var(--keep)}
+.peekrow.gone .pt img{opacity:.4;filter:grayscale(.9)}.peekrow.gone .pt .ms{color:var(--trash)}.peekrow.done .pt img{opacity:.7}
+.peekrow .pc{min-width:0;display:flex;flex-direction:column}
+.peekrow .pc b{font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.peekrow .pc i{font-style:normal;font-size:11px;color:var(--on-var);font-family:"Roboto Mono",ui-monospace,monospace}
+.peekgrid{display:grid;padding:0 8px;gap:0}
+.peekgrid .peekrow{padding:3px;margin:0}.peekgrid .peekrow .pt{width:100%;height:100%}
+.peekresize{position:absolute;top:0;bottom:0;right:0;width:8px;cursor:col-resize;touch-action:none}
+.peekresize:hover,.peek.drag .peekresize{background:rgba(168,199,250,.33)}
+
+/* video editor extras */
+.zoomer{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+.stage.zoomed{cursor:zoom-out}
+.badge.wind{left:50%;top:16px;transform:translateX(-50%);background:var(--primary-cont);color:var(--on-primary-cont);height:32px;font-size:12px}
+
+/* gallery */
+.gal{flex:1;min-width:0;overflow:auto;scrollbar-gutter:stable;padding:16px 24px}
+.galgrid{position:absolute;left:0;right:0;display:grid;justify-content:start}
+.gcell{position:relative;border-radius:8px;overflow:hidden;background:#000;cursor:pointer;filter:brightness(.8);transition:filter .12s,box-shadow .12s}
+.gcell.focus{filter:none;box-shadow:var(--shadow3);z-index:1}
+.gcell img{width:100%;height:100%;object-fit:cover;display:block}
+.gcell .dur{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;background:rgba(0,0,0,.62);border-radius:10px;padding:0 6px 0 2px;font:500 11px "Roboto Mono",monospace}
+.gcell .dur .ms{font-size:16px}
+.gstar{position:absolute;top:6px;right:6px;color:var(--warn)}.gstar .ms{font-size:18px;font-variation-settings:"FILL" 1}
+header>.pos{font-size:14px;color:var(--on-var);flex:none}
+aside.peek{padding:0;display:block}
+
+/* layout: the peek panel runs the full height; the action bar sits under the content only */
+.col{flex:1;min-width:0;display:flex;flex-direction:column}
+.col>.work,.col>.vwork{flex:1;min-height:0}
+.peektools{display:flex;align-items:center;gap:8px;padding:0 8px 8px;flex:none}
+.peektools .seg{height:32px}.peektools .seg button{padding:0 10px}
+.peektools .sm{height:32px;padding:0 8px 0 10px;font-size:13px;gap:4px}
+.peekgroup{position:absolute;left:0;right:0;display:flex;align-items:center;padding:0 16px;font-size:12px;font-weight:500;color:var(--primary)}
+.peekline,.peekgrid{position:absolute;left:0;right:0}
+.peekline{display:flex}.peekline .peekrow{flex:1;min-width:0}
+.peekgrid{display:grid;padding:0 8px}
+.peekgrid .peekrow{padding:2px;margin:0;min-width:0}.peekgrid .peekrow .pt{width:100%;height:100%}
+.peekrow .pt em{position:absolute;left:3px;bottom:3px;font:500 10px "Roboto Mono",monospace;font-style:normal;background:rgba(0,0,0,.7);border-radius:4px;padding:0 4px;line-height:15px}
+.menu.left{left:0;right:auto}
+.menu{max-height:70vh;overflow:auto}
+.menu h4{margin:8px 16px 4px;font-size:11px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;color:var(--on-var)}
+.menu .item{height:36px;font-size:13px}.menu .item .ms{font-size:18px;color:var(--on-var)}.menu .item.sel .ms{color:var(--primary)}
+.peek{overflow:visible}.peekin{overflow:hidden}.peek:not(.open) .peekin{visibility:hidden}
+
+/* video stage: name card top-left (when paused or pinned), status bottom-left, buttons top-right */
+.vwork .stage .meta{top:12px;left:12px;right:auto;bottom:auto;max-width:calc(100% - 140px);border-radius:12px;padding:8px 12px}
+.vwork .stage .badge{top:auto;bottom:12px;left:12px}
+.vwork .stage .badge.wind{top:16px;bottom:auto;left:50%}
+.starbtn.info{right:56px}.starbtn.info.on{color:var(--primary)}
+
+/* scrub preview */
+.scrubpop{position:absolute;bottom:40px;transform:translateX(-50%);background:#000;border-radius:10px;overflow:hidden;box-shadow:var(--shadow3);pointer-events:none;z-index:3}
+.scrubpop video{display:block;background:#000}
+.scrubpop span{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font:500 12px "Roboto Mono",monospace;background:rgba(0,0,0,.7);border-radius:6px;padding:1px 6px}
+
+/* peek toolbar: one row — sort menu, thumbnail-size slider, list/grid switch */
+.peektools{height:48px;padding:0 4px 0 8px;gap:6px}
+.peektools .menuwrap{flex:1 1 auto;min-width:0}
+.peektools .menuwrap>button{width:100%;min-width:0;justify-content:flex-start}
+.peektools .menuwrap>button span:not(.ms){flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.sizer{display:inline-flex;align-items:center;gap:4px;color:var(--on-var);flex:none;cursor:pointer}
+.sizer .ms{font-size:18px}
+.sizer input{width:64px;accent-color:var(--primary);cursor:pointer}
+.scrubpop video{width:100%;height:100%;object-fit:cover}
+
+/* peek grid cells: fixed to their row so thumbnails never spill over each other */
+.peekgrid{grid-auto-rows:100%;overflow:hidden}
+.peekgrid .peekrow{height:100%;overflow:hidden;display:block}
+.peekgrid .peekrow .pt{display:block;width:100%;height:100%}
+.peekrow .pt em{z-index:1}
+/* toolbar: sort and filter are separate buttons, then the count */
+.peektools .menuwrap{flex:0 1 auto}
+.peektools .menuwrap>button{width:auto;max-width:100%}
+.peektools .sizer{margin-left:auto}
+.peekcount{flex:none;font:500 12px "Roboto Mono",monospace;color:var(--on-var);padding:0 4px}
+button.outlined.active{background:var(--primary-cont);color:var(--on-primary-cont);border-color:transparent}
+
+
+/* video editor: decisions sit on the video (top right), transport lives in the timeline row; no separate bottom bar */
+.vtop{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:6px;z-index:2}
+.vbtn{height:36px;padding:0 12px;gap:6px;border-radius:18px;background:rgba(0,0,0,.6);color:#fff;font-size:13px;backdrop-filter:blur(4px)}
+.vbtn:hover{background:rgba(0,0,0,.8)}
+.vbtn.keep{background:var(--keep);color:var(--on-keep)}.vbtn.keep:hover{background:#93e6ac}
+.vbtn.round{width:36px;padding:0;justify-content:center}
+.vbtn.on{color:var(--primary)}.vbtn.on.star{color:var(--warn)}.vbtn.on.star .ms{font-variation-settings:"FILL" 1}
+.vbtn kbd{background:rgba(255,255,255,.16)}.vbtn.keep kbd{background:rgba(0,0,0,.2)}
+.infowrap{position:relative;display:inline-flex}
+.infopop{position:absolute;top:44px;right:0;min-width:300px;max-width:460px;background:rgba(20,22,26,.94);border-radius:12px;padding:10px 14px;box-shadow:var(--shadow3);font-size:13px;backdrop-filter:blur(6px)}
+.infopop table{border-collapse:collapse}.infopop td{padding:3px 0;vertical-align:top}
+.infopop td:first-child{color:var(--on-var);padding-right:14px;white-space:nowrap}.infopop td:last-child{word-break:break-word}
+.namecard{position:absolute;top:12px;left:12px;max-width:calc(100% - 470px);background:rgba(0,0,0,.6);border-radius:12px;padding:8px 12px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#d7d9e0;backdrop-filter:blur(4px)}
+.namecard b{font-weight:500;color:#fff}.namecard .in{color:#aab}
+.cutchip{position:absolute;right:12px;bottom:12px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.65);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--keep)}
+.cutchip.sound{bottom:48px;color:var(--warn)}.cutchip .ms{font-size:18px}
+.toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(20,22,26,.92);border-radius:10px;padding:8px 14px;font-size:13px;box-shadow:var(--shadow3);pointer-events:none;white-space:nowrap}
+.toast.err{color:var(--trash)}
+.vwork{padding-bottom:12px}
+.timeline{gap:10px}
+.timeline .play{width:44px;height:44px;border-radius:22px;background:var(--primary-cont);color:var(--on-primary-cont)}
+.timeline .play .ms{font-size:26px}
+.timeline .seg.marks{height:36px}.timeline .seg.marks button{padding:0 10px;font-size:13px;color:var(--on)}
+.vwork.fs{background:var(--bg);padding:16px 24px 12px}
+.peekgroup{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:28px}
+@media(max-width:1250px){.vtop .wide,.timeline .wide{display:none}.namecard{max-width:calc(100% - 330px)}}
+
+.peekgroup.click{cursor:pointer;border-radius:8px}
+.peekgroup.click:hover{background:rgba(168,199,250,.12)}
+.peekgroup .ms{font-size:16px;vertical-align:-3px;margin-right:6px}
+.folderchip{min-width:0;flex:0 1 auto;max-width:44%}
+.folderchip span:not(.ms){min-width:0;overflow:hidden;text-overflow:ellipsis;direction:rtl;text-align:left}
+
+.zoomer{position:relative}
+.scrubpop{position:absolute}.scrubpop video{position:relative}
+.cutchip.turn{bottom:84px;color:var(--primary)}
+
+.slicebtn{height:36px;padding:0 12px;gap:6px;font-size:13px;color:var(--on)}
+.slicebtn.open{background:var(--keep);color:var(--on-keep);border-color:transparent}
+.slicebtn.open kbd{background:rgba(0,0,0,.2)}
+
+/* video thumbnails: hover plays a quick slideshow of moments from the video */
+.vthumb{position:absolute;inset:0;display:block}
+.vthumb img,.reel{width:100%;height:100%;object-fit:cover;display:block}
+.reel{position:absolute;inset:0;background:#000}
+.gcell .dur,.gstar,.peekrow .pt em,.peekrow .pt>.ms{z-index:1}
+.stage{position:relative}
+.dirlink{cursor:pointer;border-radius:4px}
+.dirlink:hover{color:var(--primary)}
+.namecard{pointer-events:auto}
+
+.gcell:hover{filter:brightness(.95)}
+
+/* slices on the timeline can be dragged: the body slides it, the white grips at each end resize it */
+.track .kept.edit{cursor:grab}
+.track .grip{position:absolute;top:50%;width:10px;height:26px;margin-left:-5px;transform:translateY(-50%);border-radius:4px;background:#fff;box-shadow:var(--shadow1);cursor:ew-resize;z-index:1}
+.track .grip:hover{background:var(--keep)}
+.track .head{z-index:2;pointer-events:none}
+/* narrow peek panel: the three menu buttons show just their icons instead of clipped labels */
+.peekin{container-type:inline-size}
+@container (max-width:430px){.peektools .menuwrap>button span:not(.ms){display:none}.peektools .menuwrap>button{padding:0 4px 0 8px}}
+
+.menu.up{top:auto;bottom:44px}
+.timeline .menuwrap .sm{height:36px;padding:0 6px 0 10px;gap:2px;font-size:13px;color:var(--on-var)}
+.timeline .menuwrap .sm.active{color:var(--on-primary-cont)}
+.timeline .menu{min-width:200px}
