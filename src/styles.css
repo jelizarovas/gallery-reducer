@@ -94,13 +94,115 @@ footer{display:flex;gap:8px;align-items:center;height:64px;padding:0 24px;backgr
 .dialog kbd{background:var(--surface-top);color:var(--on)}
 .big{font-size:32px;line-height:40px;color:var(--keep)}
 
-/* connect screen */
-.connect{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
-.connect .panel{max-width:560px;background:var(--surface);border-radius:28px;padding:32px;box-shadow:var(--shadow1)}
-.connect h1{margin:0 0 8px;font-size:32px;line-height:40px;font-weight:400}
-.connect p{color:var(--on-var);margin:0 0 16px}.connect code{font-family:"Roboto Mono",monospace;color:var(--on)}
-.connect .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
-.connect .err{color:var(--trash)}
+/* welcome screen: a scrolling page (the rest of the app never scrolls as a whole) */
+.welcome{flex:1;overflow:auto;scroll-behavior:smooth;padding:0 24px;display:flex;flex-direction:column}
+.welcome>*{width:100%;max-width:1120px;margin-left:auto;margin-right:auto;flex:none}
+.welcome>.w-main{flex:1 0 auto;padding-bottom:56px}
+.welcome a{color:var(--primary);text-decoration:none}.welcome a:hover{text-decoration:underline}
+.welcome p{margin:0;color:var(--on-var)}
+.welcome h2{margin:0 0 8px;font-size:28px;line-height:36px;font-weight:400}
+.welcome h3{margin:0;font-size:16px;line-height:24px;font-weight:500;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.welcome section{margin-top:72px}
+.welcome code{user-select:text;-webkit-user-select:text;font-family:"Roboto Mono",ui-monospace,monospace;font-size:13px;color:var(--on);background:#0b0c0f;border-radius:8px;padding:8px 12px;display:block;margin-top:8px;cursor:text}
+.welcome code.inline{display:inline;white-space:nowrap;padding:2px 6px;border-radius:4px;margin:0}
+.w-top{display:flex;align-items:center;gap:4px;height:64px}
+.w-brand{display:inline-flex;align-items:center;gap:10px;font-size:18px;font-weight:500}.w-brand .ms{color:var(--keep);font-size:24px}
+.welcome .w-link{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:20px;font-weight:500;color:var(--on-var)}
+.welcome .w-link:hover{background:rgba(255,255,255,.08);text-decoration:none;color:var(--on)}
+.welcome section.w-hero{margin-top:32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:48px;align-items:center}
+.w-hero h1{margin:0 0 16px;font-size:52px;line-height:58px;font-weight:400;letter-spacing:-.5px}
+.w-sub{font-size:17px;line-height:27px}
+.w-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+button.big{height:48px;border-radius:24px;padding:0 24px;font-size:15px}
+.w-note{display:flex;gap:8px;align-items:flex-start;margin-top:16px!important;font-size:13px}.w-note .ms{font-size:18px;margin-top:1px}.w-note.err{color:var(--trash)}
+.art{display:block;width:100%;height:auto;font-family:Roboto,"Segoe UI",sans-serif}
+.hero-art{box-shadow:var(--shadow3);border-radius:28px}
+.welcome section.w-promises{margin-top:56px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.w-promise,.w-tip,.w-extra{display:flex;gap:14px;align-items:flex-start}
+.w-promise{background:var(--surface);border-radius:20px;padding:20px;flex-direction:column}
+.w-promise b,.w-tip b,.w-extra b{display:block;font-size:15px;font-weight:500;margin-bottom:4px;color:var(--on)}
+.w-promise p,.w-tip p,.w-extra p{font-size:13px;line-height:19px}
+.w-ico{flex:none;width:44px;height:44px;border-radius:14px;background:var(--primary-cont);color:var(--on-primary-cont);display:flex;align-items:center;justify-content:center}
+.w-ico .ms{font-size:24px}.w-ico.sm{width:36px;height:36px;border-radius:12px;background:var(--surface-top);color:var(--primary)}.w-ico.sm .ms{font-size:20px}
+.w-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
+.w-mode{background:var(--surface);border-radius:24px;padding:12px 12px 20px;transition:background .15s,transform .15s}
+.w-mode:hover{background:var(--surface-hi);transform:translateY(-2px)}
+.w-mode h3{margin:16px 8px 4px;font-size:20px;line-height:28px;font-weight:400}.w-mode h3 .ms{color:var(--keep)}
+.w-mode .lead{margin:0 8px;color:var(--on)!important}
+.w-mode ul{list-style:none;margin:12px 8px 0;padding:0;display:grid;gap:8px}
+.w-mode li{display:flex;gap:8px;color:var(--on-var);font-size:13px;line-height:19px}.w-mode li .ms{font-size:18px;color:var(--keep)}
+.w-intro{margin-bottom:24px!important}
+.w-setup{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+.w-steps{list-style:none;margin:0;padding:8px 24px;background:var(--surface);border-radius:24px}
+.w-steps li{display:flex;gap:16px;padding:18px 0}.w-steps li+li{box-shadow:0 -1px 0 var(--surface-top)}
+.w-steps .num{position:static;padding:0;flex:none;width:32px;height:32px;border-radius:16px;background:var(--primary-cont);color:var(--on-primary-cont);display:flex;align-items:center;justify-content:center;font-weight:500}
+.w-steps p{margin-top:4px;font-size:13.5px;line-height:21px}.w-steps b{color:var(--on);font-weight:500}
+.tag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;font-size:11px;font-weight:500;letter-spacing:.3px;background:var(--surface-top);color:var(--on-var)}
+.tag.req{background:var(--primary-cont);color:var(--on-primary-cont)}.tag.look{background:#4a3a12;color:var(--warn)}
+.w-extras{background:var(--surface);border-radius:24px;padding:24px;display:grid;gap:20px}
+.w-tips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}
+.w-tip{background:var(--surface);border-radius:20px;padding:18px}
+.welcome section.w-end{background:var(--surface);border-radius:28px;padding:40px;text-align:center}
+.w-end .w-actions{justify-content:center;margin-top:0}
+.welcome section[id]{scroll-margin-top:16px}
+.welcome a.w-brand{color:var(--on)}.welcome a.w-brand:hover{text-decoration:none}
+.welcome .w-link.on{background:var(--primary-cont);color:var(--on-primary-cont)}
+.w-actions.center{justify-content:center;margin-top:0}
+.welcome section.w-pagehead{margin-top:40px;max-width:1120px}.w-pagehead h1{margin:0 0 12px;font-size:44px;line-height:52px;font-weight:400}.w-pagehead .w-sub{max-width:760px}
+.welcome section.w-setup,.welcome section.w-doc{margin-top:32px}
+.w-steps .why{display:flex;gap:8px;margin-top:10px;padding:10px 12px;border-radius:12px;background:#0b0c0f;font-size:13px;line-height:19px}
+.w-steps .why .ms{font-size:18px;color:var(--warn)}
+.w-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}
+.w-flowstep{display:flex;gap:14px;background:var(--surface);border-radius:20px;padding:18px}
+.w-flowstep .num{position:static;padding:0;flex:none;width:32px;height:32px;border-radius:16px;background:var(--primary-cont);color:var(--on-primary-cont);display:flex;align-items:center;justify-content:center;font-weight:500}
+.w-flowstep b{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;margin-bottom:4px}.w-flowstep b .ms{color:var(--keep)}.w-flowstep p{font-size:13px;line-height:19px}
+.welcome a.w-cta{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 24px;border-radius:24px;background:var(--primary-cont);color:var(--on-primary-cont);font-weight:500;font-size:15px}
+.welcome a.w-cta:hover{text-decoration:none;background:#31558c}
+.w-doc{background:var(--surface);border-radius:24px;padding:12px 28px 28px}
+.w-doc h3{margin-top:20px}.w-doc h3 .ms{color:var(--primary)}.w-doc p{max-width:760px;margin-top:6px;font-size:14px;line-height:22px}
+.w-foot{padding:20px 0 24px;box-shadow:0 -1px 0 var(--surface-top);display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;font-size:13px}
+.w-foot .copy{color:var(--on-var)}
+.welcome .w-foot a{position:relative;display:inline-flex;align-items:center;gap:6px;color:var(--on-var);transition:color .15s,transform .12s}
+.welcome .w-foot a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;border-radius:1px;background:var(--primary);transform:scaleX(0);transform-origin:left;transition:transform .2s}
+.welcome .w-foot a:hover{color:var(--on);text-decoration:none}.welcome .w-foot a:hover::after{transform:scaleX(1)}
+.welcome .w-foot a:active{transform:translateY(1px)}
+.welcome .w-foot .sister{color:var(--primary)}.w-foot .sister .ms{font-size:18px}
+
+/* motion on the pages: things lift on hover, sink when pressed, and sections rise in on arrival */
+.welcome button,.welcome .w-cta,.welcome .w-link,.welcome .w-brand{transition:transform .12s ease,background .15s,box-shadow .15s,color .15s}
+.welcome button.big:hover,.welcome a.w-cta:hover{transform:translateY(-2px);box-shadow:var(--shadow3)}
+.welcome button.big .ms,.welcome .w-cta .ms{transition:transform .2s}
+.welcome button.big:hover .ms,.welcome a.w-cta:hover .ms{transform:scale(1.15)}
+.welcome button:active,.welcome button.big:active,.welcome a.w-cta:active,.welcome .w-link:active{transform:scale(.95);box-shadow:none;transition-duration:.05s}
+.welcome .w-link:hover .ms{transform:translateY(-1px)}.welcome .w-link .ms{transition:transform .15s}
+.welcome a.w-brand:hover .ms{transform:rotate(-8deg) scale(1.1)}.w-brand .ms{transition:transform .2s}.welcome a.w-brand:active{transform:scale(.97)}
+.w-promise,.w-tip,.w-flowstep,.w-mode,.w-extra,.w-steps li,.w-doc h3{transition:transform .18s ease,background .18s,box-shadow .18s}
+.w-promise:hover,.w-tip:hover,.w-flowstep:hover{background:var(--surface-hi);transform:translateY(-3px);box-shadow:var(--shadow3)}
+.w-mode:hover{transform:translateY(-4px);box-shadow:var(--shadow3)}
+.w-promise:active,.w-tip:active,.w-flowstep:active,.w-mode:active{transform:scale(.985);box-shadow:var(--shadow1);transition-duration:.05s}
+.w-ico,.w-steps .num,.w-flowstep .num{transition:transform .2s ease,background .2s,color .2s}
+.w-promise:hover .w-ico,.w-tip:hover .w-ico,.w-extra:hover .w-ico{transform:scale(1.12) rotate(-6deg)}
+.w-tip:hover .w-ico.sm,.w-extra:hover .w-ico.sm{background:var(--primary-cont);color:var(--on-primary-cont)}
+.w-extra:hover{transform:translateX(4px)}
+.w-steps li:hover .num,.w-flowstep:hover .num{transform:scale(1.15);background:var(--keep);color:var(--on-keep)}
+.w-steps .why{transition:background .2s}.w-steps li:hover .why{background:#14161b}
+.w-steps .why .ms{transition:transform .2s}.w-steps li:hover .why .ms{transform:scale(1.2) rotate(-10deg)}
+.w-mode .art{transition:transform .25s ease}.w-mode:hover .art{transform:scale(1.02)}
+.w-mode li .ms{transition:transform .15s}.w-mode li:hover .ms{transform:scale(1.25)}
+.hero-art{transition:transform .3s ease,box-shadow .3s}.hero-art:hover{transform:translateY(-4px) scale(1.01)}
+.hero-art .go{transform-box:fill-box;transform-origin:center;animation:w-nudge 2.4s ease-in-out infinite}
+.tag{transition:transform .15s}.w-steps li:hover .tag{transform:scale(1.06)}
+.welcome code{transition:background .15s}.welcome code:hover{background:#000}
+@keyframes w-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes w-nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+.w-top{animation:w-up .35s ease both}
+.welcome section{animation:w-up .5s ease both}
+.welcome section:nth-of-type(2){animation-delay:.08s}.welcome section:nth-of-type(3){animation-delay:.16s}.welcome section:nth-of-type(n+4){animation-delay:.22s}
+.w-hero .hero-art{animation:w-up .6s .12s ease both}
+@media(prefers-reduced-motion:reduce){.welcome *,.welcome *::after{animation:none!important;transition:none!important}}
+@media(max-width:960px){.welcome section.w-hero,.w-setup{grid-template-columns:minmax(0,1fr)}.w-hero h1{font-size:38px;line-height:44px}.w-modes,.w-tips,.w-flow{grid-template-columns:minmax(0,1fr)}.w-pagehead h1{font-size:34px;line-height:42px}.welcome section.w-promises{grid-template-columns:repeat(2,minmax(0,1fr))}.welcome section{margin-top:56px}}
+@media(max-width:520px){.w-top .w-link span:not(.ms){display:none}.w-top .w-link{padding:0 10px}.welcome{padding:0 16px}.welcome section.w-promises{grid-template-columns:minmax(0,1fr)}.w-hero h1{font-size:32px;line-height:38px}.welcome section.w-end{padding:28px 20px}.w-steps{padding:4px 16px}}
+
 
 /* compact header text: full labels on wide windows, short ones otherwise */
 .narrow{display:none}

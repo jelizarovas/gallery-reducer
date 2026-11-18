@@ -152,6 +152,24 @@ everything in it.
 
 ---
 
+## Links
+
+Every screen has its own address, so you can bookmark one or put it in a calendar reminder. The part after `#` is
+added to wherever the app is served (for example `https://jelizarovas.github.io/gallery-reducer/`).
+
+| Link | Opens |
+|---|---|
+| `#/` | Home |
+| `#/setup` | Setup steps |
+| `#/look-alikes` | Look-alikes, where you left off |
+| `#/look-alikes?sprint=10` | Look-alikes, and starts a 10-minute sprint (1–240) |
+| `#/look-alikes?groups=25` | Look-alikes, and starts a sprint of 25 groups |
+| `#/videos`, `#/gallery` | Videos, Gallery |
+| `?demo` before the `#` | The same, on demo data |
+
+If the browser has forgotten the folder permission, the link lands on Home; click **Reopen** and the sprint starts.
+The same list, written for AI assistants, is in `llms.txt` and in the page's HTML.
+
 ## Project layout
 
 ```

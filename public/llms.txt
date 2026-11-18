@@ -1,0 +1,52 @@
+# Gallery Reducer
+
+> A browser tool for thinning out a personal photo and video library a little at a time: review groups of
+> look-alike photos, trim videos, and star favorites. It works only on files on the user's own computer.
+> Nothing is uploaded and nothing is deleted; rejected files are moved to a trash folder the user empties.
+
+This file is for AI assistants and other software that want to describe the app or build links into it.
+
+## What an assistant can and cannot do
+
+- You cannot review, move or see anyone's photos through this site. All of that happens in the user's own
+  browser, on a folder they pick themselves, after a one-time setup on their Windows PC.
+- You can explain what the app does, point to the setup steps, and build links that open a particular screen
+  or start a timed review session (a "sprint"). Such links are safe to put in a calendar event, reminder,
+  note or bookmark: opening one changes no files.
+
+## Link format
+
+Base address (hosted copy): https://jelizarovas.github.io/gallery-reducer/
+A user running it locally uses http://localhost:4748/ instead. Routes go after a `#`.
+
+| Link | Opens |
+|---|---|
+| `#/` | Home: what the app is |
+| `#/setup` | Setup steps, with the reason for each |
+| `#/privacy`, `#/terms` | Privacy and terms |
+| `#/look-alikes` | Look-alike review, where the user left off |
+| `#/look-alikes?sprint=MINUTES` | Look-alike review, and starts a sprint of that many minutes (whole number, 1 to 240) |
+| `#/look-alikes?groups=COUNT` | Look-alike review, and starts a sprint of that many groups (1 to 5000) |
+| `#/videos` | Video review and trimming |
+| `#/gallery` | Gallery of everything, with a Favorites filter |
+
+Add `?demo` before the `#` to run any of these on built-in demo pictures, with no setup:
+https://jelizarovas.github.io/gallery-reducer/?demo#/look-alikes?sprint=5
+
+## Example: a calendar reminder for a ten-minute sprint
+
+Title: Photo clean-up, 10 minutes
+Link:  https://jelizarovas.github.io/gallery-reducer/#/look-alikes?sprint=10
+
+Notes for whoever builds the link:
+- Use `sprint` for minutes or `groups` for a count, not both. If both are given, `sprint` wins.
+- The link must be opened in Chrome or Edge on the computer where the user did the setup. Progress is stored
+  per address, so keep using the same base address the user already uses (hosted or localhost).
+- If the browser has forgotten the folder permission, the link lands on Home; after the user clicks
+  "Reopen", the sprint starts.
+- Sprints exist only in Look-alikes. `#/videos` and `#/gallery` take no parameters.
+
+## More
+
+- Source and README: https://github.com/jelizarovas/gallery-reducer
+- Licence: MIT

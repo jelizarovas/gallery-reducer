@@ -22,7 +22,7 @@ const GGROUPS = {
 };
 const TILES = [['open', 'Open'], ['reduced', 'Reduced'], ['kept', 'Kept'], ['later', 'Later'], ['all', 'All']];
 
-export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, changeFolder, peek, openFolder }) {
+export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, changeFolder, goHome, peek, openFolder, launch, clearLaunch }) {
   const [phase, setPhase] = useState('loading'), [error, setError] = useState('');
   const [data, setData] = useState([]), [curId, setCurId] = useState(() => store.get(K('group'), null));
   const [view, setViewState] = useState(() => ({ sort: 'default', group: 'none', ...store.get(K('groupView'), {}) })), setView = patch => setViewState(v => ({ ...v, ...patch }));
@@ -77,8 +77,8 @@ export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, 
 
   // marks follow the group on screen: the saved choice if decided, else the suggestion
   useEffect(() => { if (!cur) return; setMarks(new Set(d ? d.keep : cur.items.filter(i => !i.suggestRemove).map(i => i.id))); setFocus(0); }, [cur?.id, d?.at]); // eslint-disable-line
-  useEffect(() => { if (!cur) return; store.set(K('group'), cur.id); const h = '#' + (idx + 1); if (location.hash !== h) { if (location.hash) history.pushState(null, '', h); else history.replaceState(null, '', h); } }, [idx, cur?.id]); // eslint-disable-line
-  useEffect(() => { const pop = () => { const n = +location.hash.slice(1) - 1; if (n >= 0 && n < groups.length) setIdx(n); }; window.addEventListener('popstate', pop); return () => window.removeEventListener('popstate', pop); }, [groups.length]);
+  useEffect(() => { if (!cur) return; store.set(K('group'), cur.id); const h = '#/look-alikes/' + (idx + 1); if (location.hash !== h) { if (/^#\/look-alikes\/\d+$/.test(location.hash)) history.pushState(history.state, '', h); else history.replaceState(history.state, '', h); } }, [idx, cur?.id]); // eslint-disable-line
+  useEffect(() => { const pop = () => { const n = +(location.hash.match(/^#\/look-alikes\/(\d+)$/)?.[1] ?? 0) - 1; if (n >= 0 && n < groups.length) setIdx(n); }; window.addEventListener('popstate', pop); return () => window.removeEventListener('popstate', pop); }, [groups.length]);
 
   // thumbnails come straight off disk as object URLs, one group at a time
   useEffect(() => {
@@ -113,7 +113,7 @@ export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, 
   useEffect(() => { document.querySelector('.card.focus')?.scrollIntoView({ block: 'nearest' }); }, [focus, idx]);
 
   // sprint reaches its target -> summary
-  useEffect(() => { if (!sprint || !sprintStats) return; if (sprintStats.n >= sprint.target && !sprint.done) { setSprint({ ...sprint, done: true }); setDialog('sprintDone'); } else if (sprintStats.n < sprint.target && sprint.done) setSprint({ ...sprint, done: false }); }, [sprint, sprintStats]);
+  useEffect(() => { if (!sprint || !sprintStats || sprint.minutes) return; if (sprintStats.n >= sprint.target && !sprint.done) { setSprint({ ...sprint, done: true }); setDialog('sprintDone'); } else if (sprintStats.n < sprint.target && sprint.done) setSprint({ ...sprint, done: false }); }, [sprint, sprintStats]);
 
   // ---- actions -------------------------------------------------------------------------------------------------
   const log = async (...row) => { try { await lib.appendLine(root, CONFIG.log, 'Time,Action,From,To,KeptCopies,Group', [new Date().toISOString(), ...row].map(csv).join(',')); } catch { /* the log is best-effort */ } };
@@ -152,6 +152,15 @@ export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, 
   };
   const fav = it => { if (!it) return; if (!favs[it.id] && !d) setMarks(m => new Set(m).add(it.id)); toggleFav(it); };
   const startSprint = n => { setSprint({ target: n, start: Date.now() }); setDialog(null); };
+  // a sprint is either a number of groups (target) or a length of time (minutes)
+  const startTimed = m => { setSprint({ minutes: m, start: Date.now() }); setDialog(null); };
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { if (!sprint?.minutes || sprint.done) return; setNow(Date.now()); const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, [sprint?.minutes, sprint?.start, sprint?.done]);
+  const sprintLeft = sprint?.minutes ? Math.max(0, sprint.minutes * 60000 - (Math.max(now, sprint.start) - sprint.start)) : 0;
+  const sprintClock = Math.floor(sprintLeft / 60000) + ':' + String(Math.floor(sprintLeft / 1000) % 60).padStart(2, '0');
+  useEffect(() => { if (sprint?.minutes && !sprint.done && sprintLeft <= 0) { setSprint({ ...sprint, done: true }); setDialog('sprintDone'); } }, [sprint, sprintLeft]);
+  // a link can start one: #/look-alikes?sprint=10 (minutes) or #/look-alikes?groups=25
+  useEffect(() => { if (!launch || !groups.length) return; if (launch.sprint) startTimed(launch.sprint); else if (launch.groups) startSprint(launch.groups); clearLaunch(); }, [launch, groups.length]); // eslint-disable-line
   const closeAll = () => { setDialog(null); setMenu(false); };
 
   // keyboard, mouse buttons and controller all funnel into the same actions
@@ -205,7 +214,7 @@ export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, 
   const kind = d ? ['done', 'task_alt', d.moved.length ? 'Decided: reduced' : 'Decided: kept all', 'You already decided this group. Undo to change it.']
     : cur.suggested ? ['copy', 'content_copy', 'Same picture, extra copies', 'True copies of the same picture (taken at the same second). The extras are pre-marked for trash.']
     : ['sim', 'help', 'Similar, no suggestion', 'These look alike but are different shots, so nothing is pre-marked. Pick what to keep yourself.'];
-  const progress = sprint ? Math.min(100, 100 * sprintStats.n / sprint.target) : 100 * totals.done / groups.length;
+  const progress = sprint ? (sprint.minutes ? 100 - 100 * sprintLeft / (sprint.minutes * 60000) : Math.min(100, 100 * sprintStats.n / sprint.target)) : 100 * totals.done / groups.length;
 
   return (
     <div className="app">
@@ -220,13 +229,14 @@ export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, 
         <div className="seg">{TILES.map(([k, l]) => <button key={k} className={filter === k ? 'on' : ''} onClick={() => pickFilter(k)}>{l}{k !== 'all' && <b>{counts[k].toLocaleString()}</b>}</button>)}</div>
         <span className="spacer" />
         <PadChip pad={pad} />
-        <button className="tonal sm" title="Sprint" onClick={() => setDialog('sprint')}><Icon n="timer" /> {sprint ? `${sprintStats.n} / ${sprint.target}` : <span className="wide">Start sprint</span>}</button>
+        <button className="tonal sm" title="Sprint" onClick={() => setDialog('sprint')}><Icon n="timer" /> {sprint ? (sprint.minutes ? `${sprintClock} · ${sprintStats.n}` : `${sprintStats.n} / ${sprint.target}`) : <span className="wide">Start sprint</span>}</button>
         <div className="menuwrap" onClick={e => e.stopPropagation()}>
           <button className="outlined sm" onClick={() => setMenu(m => !m)}><Icon n="tune" /><span className="wide">Options</span><Icon n="arrow_drop_down" /></button>
           {menu && <div className="menu">
             <label className="item"><input type="checkbox" checked={onlySug} onChange={e => setOnlySug(e.target.checked)} /> Only groups with a suggestion</label>
             <button className="item" onClick={() => { setMenu(false); setDialog('keys'); }}><Icon n="keyboard" /> Keys and controller <kbd>?</kbd></button>
             <button className="item" onClick={() => { setMenu(false); setPw(0); }}><Icon n="width" /> Reset preview size</button>
+            <button className="item" onClick={goHome}><Icon n="home" /> About and setup</button>
             {!DEMO && <button className="item" onClick={changeFolder}><Icon n="folder_off" /> Change folder</button>}
           </div>}
         </div>
@@ -298,19 +308,21 @@ export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, 
       </Dialog>}
       {dialog === 'sprint' && <Dialog onClose={closeAll}>
         {sprint ? <>
-          <h2>Sprint in progress</h2><div className="big">{sprintStats.n} of {sprint.target} groups</div>
+          <h2>Sprint in progress</h2><div className="big">{sprint.minutes ? `${sprintClock} left · ${sprintStats.n} groups` : `${sprintStats.n} of ${sprint.target} groups`}</div>
           <p>{sprintStats.trashed} photos moved to trash · {fmt(sprintStats.bytes)} freed · {Math.max(1, Math.round((Date.now() - sprint.start) / 60000))} min</p>
           <div className="row"><button onClick={() => { setSprint(null); closeAll(); }}>End sprint</button><button className="tonal" onClick={closeAll}>Keep going</button></div>
         </> : <>
           <h2>Start a sprint</h2><p>Pick how many groups to decide in this sitting. The bar at the top tracks the sprint, and you get a summary at the end.</p>
           <div className="row pick">{[10, 25, 50, 100, 250].map(n => <button key={n} className="tonal" onClick={() => startSprint(n)}>{n}</button>)}</div>
+          <p>Or go by the clock:</p>
+          <div className="row pick">{[5, 10, 15, 20, 30].map(m => <button key={m} className="tonal" onClick={() => startTimed(m)}>{m} min</button>)}</div>
           <div className="row"><button onClick={closeAll}>Cancel</button></div>
         </>}
       </Dialog>}
       {dialog === 'sprintDone' && sprint && <Dialog onClose={closeAll}>
-        <h2>Sprint complete</h2><div className="big">{sprintStats.n} of {sprint.target} groups</div>
+        <h2>Sprint complete</h2><div className="big">{sprint.minutes ? `${sprintStats.n} groups in ${sprint.minutes} min` : `${sprintStats.n} of ${sprint.target} groups`}</div>
         <p>{sprintStats.trashed} photos moved to trash · {fmt(sprintStats.bytes)} freed · {Math.max(1, Math.round((Date.now() - sprint.start) / 60000))} min</p>
-        <div className="row"><button onClick={() => { setSprint(null); closeAll(); }}>Finish</button><button className="filled" onClick={() => startSprint(sprint.target)}>Another {sprint.target}</button></div>
+        <div className="row"><button onClick={() => { setSprint(null); closeAll(); }}>Finish</button>{sprint.minutes ? <button className="filled" onClick={() => startTimed(sprint.minutes)}>Another {sprint.minutes} min</button> : <button className="filled" onClick={() => startSprint(sprint.target)}>Another {sprint.target}</button>}</div>
       </Dialog>}
     </div>
   );

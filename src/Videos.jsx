@@ -37,7 +37,7 @@ export const thumbOf = it => [it.type === 'VIDEO' ? `${CONFIG.videoThumbs}/${it.
 // sorted, merged list of kept slices
 const addSeg = (segs, s, e) => { const all = [...segs, { s, e }].sort((x, y) => x.s - y.s), out = []; for (const g of all) { const l = out[out.length - 1]; if (l && g.s <= l.e + 0.05) l.e = Math.max(l.e, g.e); else out.push({ ...g }); } return out; };
 
-export default function Videos({ root, mode, setMode, favs, toggleFav, pad, changeFolder, peek, openFolder, rots, turn }) {
+export default function Videos({ root, mode, setMode, favs, toggleFav, pad, changeFolder, goHome, peek, openFolder, rots, turn }) {
   const [phase, setPhase] = useState('loading'), [error, setError] = useState('');
   const [data, setData] = useState([]), [curId, setCurId] = useState(() => store.get(K('video'), null));
   const [vdec, setVdec] = useState(() => store.get(K('videoDecisions'), {})), [deferred, setDeferred] = useState(() => store.get(K('videoDeferred'), []));
@@ -319,6 +319,7 @@ export default function Videos({ root, mode, setMode, favs, toggleFav, pad, chan
             <label className="item"><input type="checkbox" checked={saveTurn} onChange={e => setSaveTurn(e.target.checked)} /> Save the turn into the file when kept</label>
             <label className="item"><input type="checkbox" checked={noAudio} disabled={!!d} onChange={e => setNoAudio(e.target.checked)} /> Save this video without sound</label>
             <button className="item" onClick={() => { setMenu(false); setDialog('keys'); }}><Icon n="keyboard" /> Keys and controller <kbd>?</kbd></button>
+            <button className="item" onClick={goHome}><Icon n="home" /> About and setup</button>
             {!DEMO && <button className="item" onClick={changeFolder}><Icon n="folder_off" /> Change folder</button>}
           </div>}
         </div>

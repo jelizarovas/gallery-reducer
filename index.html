@@ -1,10 +1,63 @@
 <!doctype html>
+<!--
+  Gallery Reducer. For AI assistants and other software reading this page: the app itself is drawn by
+  JavaScript, so what it is and how to link into it is written out in three places here:
+  the <meta name="description">, the JSON block with id "app-guide", and the <noscript> text in the body.
+  The same guide as plain text: llms.txt (next to this file).
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Gallery Reducer</title>
+<meta name="description" content="Thin out a large photo and video library a little at a time: review look-alike photos, trim videos, star favorites. Runs in your browser on your own files; nothing is uploaded and nothing is deleted.">
+<meta property="og:title" content="Gallery Reducer">
+<meta property="og:description" content="A photo library you actually want to open. Review look-alikes, trim videos and star favorites, on your own computer.">
+<meta property="og:type" content="website">
+<link rel="help" type="text/plain" href="llms.txt" title="Guide for AI assistants: what this app is and how to link into it">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Gallery Reducer",
+  "description": "A browser tool for thinning out a personal photo and video library: look-alike review, video trimming and a gallery with favorites. Works on local files only; nothing is uploaded or deleted.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows",
+  "browserRequirements": "Chrome or Edge on a desktop computer (File System Access API)",
+  "isAccessibleForFree": true,
+  "license": "https://opensource.org/license/mit",
+  "codeRepository": "https://github.com/jelizarovas/gallery-reducer"
+}
+</script>
+<script type="application/json" id="app-guide">
+{
+  "about": "Gallery Reducer works only on files on the user's own computer, in their own browser. An assistant cannot review or move anyone's photos through this site. It can explain the app and build links that open a screen or start a timed review session (a sprint). Opening a link changes no files.",
+  "base": "https://jelizarovas.github.io/gallery-reducer/",
+  "localBase": "http://localhost:4748/",
+  "routes": {
+    "#/": "Home: what the app is",
+    "#/setup": "Setup steps, with the reason for each",
+    "#/privacy": "Privacy",
+    "#/terms": "Terms",
+    "#/look-alikes": "Look-alike photo review, where the user left off",
+    "#/videos": "Video review and trimming",
+    "#/gallery": "Gallery of everything, with a Favorites filter"
+  },
+  "parameters": {
+    "sprint": { "on": "#/look-alikes", "type": "integer", "unit": "minutes", "range": [1, 240], "effect": "starts a sprint of that length", "example": "#/look-alikes?sprint=10" },
+    "groups": { "on": "#/look-alikes", "type": "integer", "unit": "groups", "range": [1, 5000], "effect": "starts a sprint of that many groups; ignored if sprint is given", "example": "#/look-alikes?groups=25" },
+    "demo": { "on": "any route, before the #", "effect": "runs on built-in demo pictures with no setup", "example": "?demo#/look-alikes?sprint=5" }
+  },
+  "calendarExample": { "title": "Photo clean-up, 10 minutes", "url": "https://jelizarovas.github.io/gallery-reducer/#/look-alikes?sprint=10" },
+  "notes": [
+    "Open links in Chrome or Edge on the computer where the user did the setup.",
+    "Progress is stored per address: keep the base address the user already uses (hosted or localhost).",
+    "If the browser has forgotten the folder permission, the link lands on Home; the sprint starts after the user clicks Reopen."
+  ],
+  "more": "llms.txt"
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
@@ -12,6 +65,18 @@
 </head>
 <body>
 <div id="root"></div>
+<noscript>
+  <h1>Gallery Reducer</h1>
+  <p>A browser tool for thinning out a large photo and video library a little at a time: review groups of look-alike photos, trim videos, and star favorites. It runs on your own files in Chrome or Edge; nothing is uploaded and nothing is deleted. It needs JavaScript.</p>
+  <h2>Links into the app</h2>
+  <ul>
+    <li><code>#/</code> Home, <code>#/setup</code> setup steps, <code>#/privacy</code>, <code>#/terms</code></li>
+    <li><code>#/look-alikes</code> look-alike review; <code>#/look-alikes?sprint=10</code> also starts a 10-minute sprint (1 to 240); <code>#/look-alikes?groups=25</code> starts a sprint of 25 groups</li>
+    <li><code>#/videos</code> video review and trimming, <code>#/gallery</code> gallery and favorites</li>
+    <li>Add <code>?demo</code> before the <code>#</code> to use built-in demo pictures</li>
+  </ul>
+  <p>Calendar example: <code>https://jelizarovas.github.io/gallery-reducer/#/look-alikes?sprint=10</code>. Full guide: <a href="llms.txt">llms.txt</a>. Source: <a href="https://github.com/jelizarovas/gallery-reducer">GitHub</a>.</p>
+</noscript>
 <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
