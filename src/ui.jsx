@@ -33,6 +33,19 @@ export function ModeSwitch({ mode, setMode, favCount }) {
   return <div className="seg modes">{modes.map(([k, icon, label]) => <button key={k} className={mode === k ? 'on' : ''} onClick={() => setMode(k)} title={label}><Icon n={icon} /><span className="lbl">{label}</span>{k === 'gallery' && favCount > 0 && <b title="Favorites">★ {favCount}</b>}</button>)}</div>;
 }
 
+// The status filter: a row of tabs on a wide window, one dropdown on a narrow one (CSS shows one or the other).
+export function FilterTabs({ tiles, filter, counts, onPick }) {
+  const cur = tiles.find(t => t[0] === filter) || tiles[0], n = k => k === 'all' ? null : counts[k].toLocaleString();
+  return <>
+    <div className="seg filters">{tiles.map(([k, l]) => <button key={k} className={filter === k ? 'on' : ''} onClick={() => onPick(k)}>{l}{n(k) && <b>{n(k)}</b>}</button>)}</div>
+    <Drop className="filterdrop" icon="filter_list" label={<>{cur[1]}{n(cur[0]) && <b>&nbsp;{n(cur[0])}</b>}</>} title="Which ones to show" align="left">
+      <h4>Show</h4>{tiles.map(([k, l]) => <Choice key={k} on={filter === k} onClick={() => onPick(k)}>{l}{n(k) && <span className="cnt">{n(k)}</span>}</Choice>)}
+    </Drop>
+  </>;
+}
+// One button style for every toolbar control: icon, label (hidden when there is no room), optional key hint.
+export const Tool = ({ icon, label, on, hint, className = '', ...rest }) => <button className={`tool${on ? ' on' : ''}${className ? ' ' + className : ''}`} {...rest}><Icon n={icon} /><span className="lbl">{label}</span>{hint}</button>;
+
 export const PadChip = ({ pad }) => pad ? <span className="padchip" title="Controller connected"><Icon n="sports_esports" /></span> : null;
 export const PeekButton = ({ peek }) => <button className="iconbtn" title={`${peek.open ? 'Hide' : 'Show'} the quick peek panel (Alt+L)`} onClick={() => peek.set({ open: !peek.open })}><Icon n={peek.open ? 'left_panel_close' : 'left_panel_open'} /></button>;
 
@@ -180,12 +193,12 @@ export function Peek({ root, peek, items, current, onPick, tools, onGroup }) {
 }
 
 // A small dropdown used inside toolbars: a button that opens a panel of choices.
-export function Drop({ icon, label, title, children, align = 'left', on }) {
+export function Drop({ icon, label, title, children, align = 'left', on, className = '' }) {
   const [open, setOpen] = useState(false);
   useEffect(() => { if (!open) return; const off = () => setOpen(false); window.addEventListener('click', off); return () => window.removeEventListener('click', off); }, [open]);
   return (
-    <div className="menuwrap" onClick={e => e.stopPropagation()}>
-      <button className={`outlined sm${on ? ' active' : ''}`} title={title} onClick={() => setOpen(o => !o)}><Icon n={icon} />{label && <span>{label}</span>}<Icon n="arrow_drop_down" /></button>
+    <div className={`menuwrap${className ? ' ' + className : ''}`} onClick={e => e.stopPropagation()}>
+      <button className={`tool sm${on ? ' on' : ''}`} title={title} onClick={() => setOpen(o => !o)}><Icon n={icon} />{label && <span className="lbl">{label}</span>}<Icon n="arrow_drop_down" /></button>
       {open && <div className={`menu ${align}`}>{children}</div>}
     </div>
   );

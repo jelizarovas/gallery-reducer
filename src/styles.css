@@ -396,3 +396,59 @@ button.outlined.active{background:var(--primary-cont);color:var(--on-primary-con
 .timeline .menuwrap .sm{height:36px;padding:0 6px 0 10px;gap:2px;font-size:13px;color:var(--on-var)}
 .timeline .menuwrap .sm.active{color:var(--on-primary-cont)}
 .timeline .menu{min-width:200px}
+
+/* ------------------------------------------------------------------------------------------------------------
+   One control style. Every toolbar control is a filled pill on a tonal surface: no outlines, 36px tall, icon then
+   label. Colour means state only: primary container = on / selected, green = keep. Things press in when clicked. */
+button.outlined,.tool{border:0;background:var(--surface-hi);color:var(--on)}
+button.outlined:hover,.tool:hover{background:var(--surface-top)}
+.tool{height:36px;padding:0 14px;gap:6px;border-radius:18px;font-size:13px}
+.tool .lbl{display:inline-flex;align-items:center}.tool .lbl b{font-weight:500}
+.tool.on,.tool.on:hover{background:var(--primary-cont);color:var(--on-primary-cont)}
+.tool kbd{background:rgba(255,255,255,.1)}
+.iconbtn{background:var(--surface-hi)}.iconbtn:hover{background:var(--surface-top)}
+.seg{border:0;background:var(--surface-hi)}.seg>*+*{border-left:0}
+.seg button{color:var(--on-var)}.seg button:hover{background:var(--surface-top)}.seg button.on,.seg button.on:hover{background:var(--primary-cont);color:var(--on-primary-cont)}
+.seg .pos{color:var(--on)}
+header .sm,.timeline .menuwrap .sm,.controls .menuwrap .sm{height:36px;padding:0 14px;gap:6px;font-size:13px;color:var(--on)}
+header .tool.sm.on,.controls .menuwrap .sm.on{color:var(--on-primary-cont)}
+header .tool .ms:last-child:not(:first-child),.controls .menuwrap .tool .ms:last-child{margin:0 -6px 0 -4px;color:var(--on-var)}
+button:active:not(:disabled){transform:scale(.96)}button{transition:background .15s,box-shadow .15s,transform .08s}
+.menu .item:active{transform:none}
+.menu .item .cnt{margin-left:auto;font:500 12px "Roboto Mono",monospace;color:var(--on-var)}
+
+/* header: collapses in steps instead of running off the edge */
+header{gap:8px;padding:0 16px;min-width:0}
+header>*{flex:none}header>.spacer{flex:1 1 0;min-width:0}
+.filterdrop{display:none}
+@media(max-width:1250px){header .wide{display:inline}.narrow{display:none}.seg.modes button:not(.on) .lbl{display:inline}}
+@media(max-width:1340px){header .wide,footer .wide{display:none}.narrow{display:inline}.seg.modes button:not(.on) .lbl{display:none}}
+@media(max-width:1180px){.seg.filters{display:none}.filterdrop{display:block}}
+@media(max-width:760px){.seg.modes .lbl{display:none}.filterdrop .lbl{display:none}header{gap:6px;padding:0 8px}.seg.nav button{padding:0 6px}.seg .pos{padding:0 4px}}
+
+/* video screen: the scrub track has the full width to itself, the controls sit in one row under it */
+.vwork{container-type:inline-size;gap:8px}
+.timeline{height:32px;gap:0}.track{height:32px}.scrubpop{bottom:34px}
+.controls{flex:none;display:flex;align-items:center;gap:8px;height:44px;white-space:nowrap;min-width:0}
+.controls .spacer{flex:1 1 0;min-width:0}
+.controls .t{font:500 13px "Roboto Mono",ui-monospace,monospace;color:var(--on-var);padding:0 6px}
+.controls .play{width:44px;height:44px;border-radius:22px;background:var(--primary-cont);color:var(--on-primary-cont)}.controls .play:hover{background:#31558c}
+.controls .play .ms{font-size:26px}
+.controls .menu{min-width:200px}
+.slicebtn.open,.slicebtn.open:hover{background:var(--keep);color:var(--on-keep)}
+.vbtn .lbl{display:inline}
+.vbtn.on{background:var(--primary-cont);color:var(--on-primary-cont)}.vbtn.on.star{background:rgba(0,0,0,.6);color:var(--warn)}
+.vbtn .pad{min-width:20px;height:20px}
+.namecard{max-width:calc(100% - 700px)}
+@container (max-width:1160px){.controls .tool:not(.slicebtn) .lbl{display:none}.controls .tool{padding:0 10px}.vtop .lbl{display:none}.namecard{max-width:calc(100% - 420px)}}
+@container (max-width:700px){.controls .lbl,.controls .t,.vtop kbd,.vtop .pad,.namecard{display:none}.controls{gap:4px}.controls .tool{padding:0 8px}.vtop{gap:4px}}
+
+/* plain message screens (loading, nothing found) */
+.connect{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+.connect .panel{background:var(--surface);border-radius:28px;padding:32px 40px;max-width:560px;text-align:center}
+.connect h1{margin:0 0 8px;font-size:24px;line-height:32px;font-weight:400}.connect p{margin:0;color:var(--on-var)}.connect .err{color:var(--trash)}
+.connect .row{display:flex;justify-content:center;margin-top:20px}
+@container (max-width:520px){.controls{flex-wrap:wrap;height:auto}.controls .spacer{display:none}}
+/* look-alikes action bar: green for the main action, the same neutral pill for the rest */
+footer button:not(.filled){background:var(--surface-hi);color:var(--on)}footer button:not(.filled):hover{background:var(--surface-top);box-shadow:none}
+footer button kbd{background:rgba(255,255,255,.1)}footer button.filled kbd{background:rgba(0,0,0,.2)}

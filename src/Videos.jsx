@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { CONFIG, DEMO, K } from './config.js';
 import * as lib from './lib/library.js';
 import { store, fmt, parts } from './lib/progress.js';
-import { Icon, Hint, Dialog, Meta, ModeSwitch, PadChip, PeekButton, Peek, Drop, Choice, useInput, useFileUrl, csv, clock } from './ui.jsx';
+import { Icon, Hint, Dialog, Meta, ModeSwitch, PadChip, PeekButton, Peek, Drop, Choice, useInput, useFileUrl, csv, clock, FilterTabs, Tool } from './ui.jsx';
 
 const SPEEDS = [0.25, 0.5, 1, 1.5, 2, 4, 8];
 const TILES = [['open', 'Open'], ['trim', 'To cut'], ['keep', 'Kept'], ['trash', 'Trashed'], ['later', 'Later'], ['all', 'All']];
@@ -308,12 +308,12 @@ export default function Videos({ root, mode, setMode, favs, toggleFav, pad, chan
           <span className="pos" title="Video"><span className="wide">Video&nbsp;</span>{(idx + 1).toLocaleString()}<span className="wide">&nbsp;of&nbsp;</span><span className="narrow">&nbsp;/&nbsp;</span>{list.length.toLocaleString()}</span>
           <button title="Next video (] · mouse forward · D-pad right)" onClick={() => go(1)}><Icon n="chevron_right" /></button>
         </div>
-        <div className="seg">{TILES.map(([k, l]) => <button key={k} className={filter === k ? 'on' : ''} onClick={() => pickFilter(k)}>{l}{k !== 'all' && <b>{counts[k].toLocaleString()}</b>}</button>)}</div>
+        <FilterTabs tiles={TILES} filter={filter} counts={counts} onPick={pickFilter} />
         <span className="spacer" />
         <PadChip pad={pad} />
-        <button className="tonal sm" title="Cuts waiting to be applied" onClick={() => setDialog('cuts')}><Icon n="content_cut" /> {pending.length}<span className="wide">&nbsp;to cut</span></button>
+        <button className={`tool sm${pending.length ? ' on' : ''}`} title="Cuts waiting to be applied" onClick={() => setDialog('cuts')}><Icon n="content_cut" /> {pending.length}<span className="wide">&nbsp;to cut</span></button>
         <div className="menuwrap" onClick={e => e.stopPropagation()}>
-          <button className="outlined sm" onClick={() => setMenu(m => !m)}><Icon n="tune" /><span className="wide">Options</span><Icon n="arrow_drop_down" /></button>
+          <button className="tool sm" title="Options" onClick={() => setMenu(m => !m)}><Icon n="tune" /><span className="wide">Options</span><Icon n="arrow_drop_down" /></button>
           {menu && <div className="menu">
             <label className="item"><input type="checkbox" checked={autoplay} onChange={e => setAutoplay(e.target.checked)} /> Play each video as it opens</label>
             <label className="item"><input type="checkbox" checked={saveTurn} onChange={e => setSaveTurn(e.target.checked)} /> Save the turn into the file when kept</label>
@@ -341,12 +341,12 @@ export default function Videos({ root, mode, setMode, favs, toggleFav, pad, chan
               {st && <span className={`badge ${st[0]}`}><Icon n={st[1]} />{st[2]}{d.applied ? ' · APPLIED' : ''}</span>}
               {wind !== 0 && <span className="badge wind"><Icon n={wind > 0 ? 'fast_forward' : 'fast_rewind'} />{wind > 0 ? 'FAST FORWARD' : 'REWIND'}</span>}
               <div className="vtop" onClick={e => e.stopPropagation()} onDoubleClick={e => e.stopPropagation()}>
-                <button className="vbtn keep" disabled={!!d || busy} onClick={keep} title="Keep this video (with the slices, if any are marked)"><Icon n={isCut ? 'content_cut' : 'check'} /><span className="wide">{isCut ? `Keep ${final.length} slice${final.length === 1 ? '' : 's'}` : 'Keep'}</span><Hint k="Y" b="X" pad={pad} /></button>
-                <button className="vbtn" disabled={!!d || busy} onClick={trash} title="Move this video to trash"><Icon n="delete" /><span className="wide">Trash</span><Hint k="T" b="B" pad={pad} /></button>
-                <button className="vbtn" disabled={!!d || busy} onClick={defer} title="Defer: send to the end of the line"><Icon n="schedule" /><span className="wide">Defer</span><Hint k="D" b="Y" pad={pad} /></button>
-                <button className="vbtn" disabled={busy || (!d && !segs.length && inP == null)} onClick={undo} title="Undo (the last mark, or the decision)"><Icon n="undo" /><span className="wide">Undo</span><Hint k="U" b="View" pad={pad} /></button>
+                <button className="vbtn keep" disabled={!!d || busy} onClick={keep} title="Keep this video (with the slices, if any are marked)"><Icon n={isCut ? 'content_cut' : 'check'} /><span className="lbl">{isCut ? `Keep ${final.length} slice${final.length === 1 ? '' : 's'}` : 'Keep'}</span><Hint k="Y" b="X" pad={pad} /></button>
+                <button className="vbtn" disabled={!!d || busy} onClick={trash} title="Move this video to trash"><Icon n="delete" /><span className="lbl">Trash</span><Hint k="T" b="B" pad={pad} /></button>
+                <button className="vbtn" disabled={!!d || busy} onClick={defer} title="Defer: send to the end of the line"><Icon n="schedule" /><span className="lbl">Defer</span><Hint k="D" b="Y" pad={pad} /></button>
+                <button className="vbtn" disabled={busy || (!d && !segs.length && inP == null)} onClick={undo} title="Undo (the last mark, or the decision)"><Icon n="undo" /><span className="lbl">Undo</span><Hint k="U" b="View" pad={pad} /></button>
                 <span className="infowrap" onMouseEnter={() => setInfoHover(true)} onMouseLeave={() => setInfoHover(false)}>
-                  <button className={`vbtn round${info ? ' on' : ''}`} title={info ? 'Details pinned open: click to unpin' : 'Details: hover to peek, click to pin'} onClick={() => setInfo(i => !i)}><Icon n="info" /></button>
+                  <button className={`vbtn${info ? ' on' : ''}`} title={info ? 'Details pinned open: click to unpin' : 'Details: hover to peek, click to pin'} onClick={() => setInfo(i => !i)}><Icon n="info" /><span className="lbl">Details</span></button>
                   {(info || infoHover) && <div className="infopop"><table><tbody>
                     <tr><td>File</td><td>{nm.file}</td></tr>
                     <tr><td>Folder</td><td>{nm.dir}</td></tr>
@@ -357,7 +357,7 @@ export default function Videos({ root, mode, setMode, favs, toggleFav, pad, chan
                     {d && <tr><td>Decision</td><td>{st[2].toLowerCase()}{d.applied ? ', applied' : ''}</td></tr>}
                   </tbody></table></div>}
                 </span>
-                <button className={`vbtn round${fav ? ' on star' : ''}`} title="Favorite (F · D-pad up)" onClick={() => toggleFav(cur)}><Icon n="star" /></button>
+                <button className={`vbtn${fav ? ' on star' : ''}`} title="Favorite (F · D-pad up)" onClick={() => toggleFav(cur)}><Icon n="star" /><span className="lbl">Favorite</span><Hint k="F" b="↑" pad={pad} /></button>
               </div>
               {url && !playing && wind === 0 && <span className="bigplay"><Icon n="play_arrow" /></span>}
               {zoom === 1 && !playing && <div className="namecard" onClick={e => e.stopPropagation()}><b>{nm.file}</b> <span className="in">in</span> <span className="dirlink" title={explorer ? 'Open this folder in Explorer' : 'Copy this folder’s path (to paste into Explorer)'} onClick={reveal}>{nm.dir}</span></div>}
@@ -367,8 +367,6 @@ export default function Videos({ root, mode, setMode, favs, toggleFav, pad, chan
               {msg.text && <span className={`toast${msg.err ? ' err' : ''}`}>{msg.text}</span>}
             </div>
             <div className="timeline">
-              <button className="iconbtn play" disabled={!url} onClick={togglePlay} title={`${playing ? 'Pause' : 'Play'} (Space · A)`}><Icon n={playing ? 'pause' : 'play_arrow'} /></button>
-              <span className="t">{clock(headAt)}</span>
               <div className={`track${scrub ? ' drag' : ''}`} ref={tl}
                 onPointerDown={trackDown} onPointerMove={trackMove} onPointerUp={trackUp} onPointerCancel={trackUp} onPointerLeave={() => { if (!scrub) setPop(null); }}>
                 <i className="rail" />
@@ -379,18 +377,22 @@ export default function Videos({ root, mode, setMode, favs, toggleFav, pad, chan
                 <i className="head" style={{ left: pct(headAt) }} />
                 {url && <div className="scrubpop" style={{ left: pop ? pop.x : 0, display: pop ? 'block' : 'none', ...popSize }}><video ref={pv} style={turned(popSize.width, popSize.height)} src={url} muted preload="metadata" onSeeked={e => { if (pvWant.current != null) { const t = pvWant.current; pvWant.current = null; e.target.currentTime = t; } }} /><span>{clock(pop ? pop.t : 0)}</span></div>}
               </div>
-              <span className="t">{clock(dur)}</span>
-              <button className={`outlined slicebtn${inP != null ? ' open' : ''}`} disabled={!!d || !url} onClick={slice} title={inP != null ? 'End the slice here (S · LB)' : 'Start a slice here (S · LB). Press again where it ends; repeat for more slices.'}><Icon n="content_cut" /><span>{inP != null ? 'End slice' : 'Slice'}</span><Hint k="S" b="LB" pad={pad} /></button>
-              <button className={`iconbtn${cutsOnly ? ' on' : ''}`} title={`Play only the kept slices: ${cutsOnly ? 'on' : 'off'} (P · D-pad down)`} onClick={() => setCutsOnly(c => !c)}><Icon n="playlist_play" /></button>
-              <button className="iconbtn" disabled={!url} title="Save this frame as a picture (G). It goes to your Downloads folder." onClick={snapshot}><Icon n="photo_camera" /></button>
-              <Drop icon="speed" label={speed === 1 ? '' : `${speed}×`} title="Playback speed (< slower, > faster). Remembered for this video." align="up" on={speed !== 1}>
+            </div>
+            <div className="controls">
+              <button className="iconbtn play" disabled={!url} onClick={togglePlay} title={`${playing ? 'Pause' : 'Play'} (Space · A)`}><Icon n={playing ? 'pause' : 'play_arrow'} /></button>
+              <span className="t">{clock(headAt)} / {clock(dur)}</span>
+              <Tool icon="content_cut" label={inP != null ? 'End slice' : 'Slice'} className={`slicebtn${inP != null ? ' open' : ''}`} hint={<Hint k="S" b="LB" pad={pad} />} disabled={!!d || !url} onClick={slice} title={inP != null ? 'End the slice here (S · LB)' : 'Start a slice here (S · LB). Press again where it ends; repeat for more slices.'} />
+              <Tool icon="playlist_play" label="Slices only" on={cutsOnly} title={`Play only the kept slices: ${cutsOnly ? 'on' : 'off'} (P · D-pad down)`} onClick={() => setCutsOnly(c => !c)} />
+              <span className="spacer" />
+              <Tool icon="photo_camera" label="Snapshot" disabled={!url} title="Save this frame as a picture (G). It goes to your Downloads folder." onClick={snapshot} />
+              <Drop icon="speed" label={speed === 1 ? 'Speed' : `${speed}×`} title="Playback speed (< slower, > faster). Remembered for this video." align="up" on={speed !== 1}>
                 <h4>Playback speed</h4>{SPEEDS.map(s => <Choice key={s} on={speed === s} onClick={() => setSpeed(s)}>{s === 1 ? 'Normal (1×)' : s < 1 ? `${s}× (slower)` : `${s}×`}</Choice>)}
               </Drop>
-              <button className={`iconbtn${loop ? ' on' : ''}`} title={`Loop: ${loop ? 'on, playback starts over at the end' : 'off, playback stops at the end'} (Q)`} onClick={() => setLoop(l => !l)}><Icon n={loop ? 'repeat_on' : 'repeat'} /></button>
-              <button className={`iconbtn${muted ? ' on' : ''}`} title={`Sound: ${muted ? 'muted' : 'on'} (M · left stick click)`} onClick={() => setMuted(m => !m)}><Icon n={muted ? 'volume_off' : 'volume_up'} /></button>
-              <button className={`iconbtn${zoom > 1 ? ' on' : ''}`} title="Quick zoom (Z · right stick click · mouse wheel); move the mouse or right stick to look around" onClick={toggleZoom}><Icon n={zoom > 1 ? 'zoom_out' : 'zoom_in'} /></button>
-              <button className={`iconbtn${rot ? ' on' : ''}`} title={`Turn the picture a quarter turn clockwise (R)${rot ? ` · now ${rot}°` : ''}. For viewing only, unless "Save the turn into the file" is ticked in Options.`} onClick={rotate}><Icon n="rotate_90_degrees_cw" /></button>
-              <button className={`iconbtn${fs ? ' on' : ''}`} title="Full screen (Alt+Enter · double-click the video)" onClick={toggleFs}><Icon n={fs ? 'fullscreen_exit' : 'fullscreen'} /></button>
+              <Tool icon="repeat" label="Loop" on={loop} title={`Loop: ${loop ? 'on, playback starts over at the end' : 'off, playback stops at the end'} (Q)`} onClick={() => setLoop(l => !l)} />
+              <Tool icon={muted ? 'volume_off' : 'volume_up'} label={muted ? 'Muted' : 'Sound'} on={muted} title={`Sound: ${muted ? 'muted' : 'on'} (M · left stick click)`} onClick={() => setMuted(m => !m)} />
+              <Tool icon={zoom > 1 ? 'zoom_out' : 'zoom_in'} label="Zoom" on={zoom > 1} title="Quick zoom (Z · right stick click · mouse wheel); move the mouse or right stick to look around" onClick={toggleZoom} />
+              <Tool icon="rotate_90_degrees_cw" label={rot ? `Turned ${rot}°` : 'Turn'} on={!!rot} title={`Turn the picture a quarter turn clockwise (R)${rot ? ` · now ${rot}°` : ''}. For viewing only, unless "Save the turn into the file" is ticked in Options.`} onClick={rotate} />
+              <Tool icon={fs ? 'fullscreen_exit' : 'fullscreen'} label="Full screen" on={fs} title="Full screen (Alt+Enter · double-click the video)" onClick={toggleFs} />
             </div>
           </div>
 

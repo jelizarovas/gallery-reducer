@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { CONFIG, DEMO, K } from './config.js';
 import * as lib from './lib/library.js';
 import { store, fmt, parts } from './lib/progress.js';
-import { Icon, Badge, Hint, Dialog, Meta, ModeSwitch, PadChip, PeekButton, Peek, Drop, Choice, useInput, csv } from './ui.jsx';
+import { Icon, Badge, Hint, Dialog, Meta, ModeSwitch, PadChip, PeekButton, Peek, Drop, Choice, useInput, csv, FilterTabs } from './ui.jsx';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const gBytes = g => g.items.reduce((a, i) => a + i.bytes, 0), gTaken = g => g.items.map(i => i.taken).filter(Boolean).sort()[0] || '', gFile = g => parts(g.items[0], CONFIG.photosPrefix).file, gDir = g => parts(g.items[0], CONFIG.photosPrefix).dir;
@@ -226,12 +226,12 @@ export default function LookAlikes({ root, mode, setMode, favs, toggleFav, pad, 
           <span className="pos" title="Group"><span className="wide">Group&nbsp;</span>{(idx + 1).toLocaleString()}<span className="wide">&nbsp;of&nbsp;</span><span className="narrow">&nbsp;/&nbsp;</span>{groups.length.toLocaleString()}</span>
           <button title="Next group (→ · mouse forward · RB)" onClick={() => go(1)}><Icon n="chevron_right" /></button>
         </div>
-        <div className="seg">{TILES.map(([k, l]) => <button key={k} className={filter === k ? 'on' : ''} onClick={() => pickFilter(k)}>{l}{k !== 'all' && <b>{counts[k].toLocaleString()}</b>}</button>)}</div>
+        <FilterTabs tiles={TILES} filter={filter} counts={counts} onPick={pickFilter} />
         <span className="spacer" />
         <PadChip pad={pad} />
-        <button className="tonal sm" title="Sprint" onClick={() => setDialog('sprint')}><Icon n="timer" /> {sprint ? (sprint.minutes ? `${sprintClock} · ${sprintStats.n}` : `${sprintStats.n} / ${sprint.target}`) : <span className="wide">Start sprint</span>}</button>
+        <button className={`tool sm${sprint ? ' on' : ''}`} title="Sprint" onClick={() => setDialog('sprint')}><Icon n="timer" /> {sprint ? (sprint.minutes ? `${sprintClock} · ${sprintStats.n}` : `${sprintStats.n} / ${sprint.target}`) : <span className="wide">Start sprint</span>}</button>
         <div className="menuwrap" onClick={e => e.stopPropagation()}>
-          <button className="outlined sm" onClick={() => setMenu(m => !m)}><Icon n="tune" /><span className="wide">Options</span><Icon n="arrow_drop_down" /></button>
+          <button className="tool sm" title="Options" onClick={() => setMenu(m => !m)}><Icon n="tune" /><span className="wide">Options</span><Icon n="arrow_drop_down" /></button>
           {menu && <div className="menu">
             <label className="item"><input type="checkbox" checked={onlySug} onChange={e => setOnlySug(e.target.checked)} /> Only groups with a suggestion</label>
             <button className="item" onClick={() => { setMenu(false); setDialog('keys'); }}><Icon n="keyboard" /> Keys and controller <kbd>?</kbd></button>
