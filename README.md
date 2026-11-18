@@ -178,3 +178,7 @@ thumbnails or progress are stored in this project.
 - Videos in formats a browser cannot play (`.avi`, `.mts`, `.mpg`, `.wmv` …) play from Immich's converted copy,
   which can be lower resolution than the original.
 - `.mpg`, `.mpeg` and `.wmv` files cannot be turned by `apply-trims`.
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).
